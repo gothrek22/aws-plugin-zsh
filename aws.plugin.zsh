@@ -38,8 +38,8 @@ function aws_change_access_key() {
 }
 
 function aws_profiles() {
-  [[ -r "${AWS_CREDENTIALS_FILE:-$HOME/.aws/config}" ]] || return 1
-  grep '\[' "${AWS_CREDENTIALS_FILE:-$HOME/.aws/config}"|sed -n 's/\[\([0-9A-Za-z_\.-]*\)\]/\1/p'
+  [[ -r "${AWS_CREDENTIALS_FILE:-$HOME/.aws/credentials}" ]] || return 1
+  grep '\[' "${AWS_CREDENTIALS_FILE:-$HOME/.aws/credentials}"|sed -n 's/\[\([0-9A-Za-z_\.-]*\)\]/\1/p'
 }
 
 function _aws_profiles() {
