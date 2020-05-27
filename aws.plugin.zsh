@@ -5,22 +5,20 @@ function agp() {
 # AWS profile selection
 function asp() {
   if [[ -z "$1" ]]; then
-    unset AWS_DEFAULT_PROFILE AWS_PROFILE AWS_EB_PROFILE AWS_DEFAULT_REGION
+    unset AWS_PROFILE AWS_REGION
     echo AWS profile cleared.
     return
   fi
 
   local available_profiles=($(aws_profiles))
   if [[ -z "${available_profiles[(r)$1]}" ]]; then
-    echo "${fg[red]}Profile '$1' not found in '${AWS_CONFIG_FILE:-$HOME/.aws/config}'" >&2
+    echo "${fg[red]}Profile '$1' not found in '${AWS_CREDENTIALS_FILE:-$HOME/.aws/credentials}'" >&2
     echo "Available profiles: ${(j:, :)available_profiles:-no profiles found}${reset_color}" >&2
     return 1
   fi
 
-  export AWS_DEFAULT_PROFILE=$1
   export AWS_PROFILE=$1
-  export AWS_EB_PROFILE=$1
-  export AWS_DEFAULT_REGION=$2
+  export AWS_REGION=$2
 }
 
 function aws_change_access_key() {
@@ -40,8 +38,8 @@ function aws_change_access_key() {
 }
 
 function aws_profiles() {
-  [[ -r "${AWS_CONFIG_FILE:-$HOME/.aws/config}" ]] || return 1
-  grep '\[profile' "${AWS_CONFIG_FILE:-$HOME/.aws/config}"|sed -e 's/.*profile \([a-zA-Z0-9_\.-]*\).*/\1/'
+  [[ -r "${AWS_CREDENTIALS_FILE:-$HOME/.aws/config}" ]] || return 1
+  grep '\[' "${AWS_CREDENTIALS_FILE:-$HOME/.aws/config}"|sed -n 's/\[\([0-9A-Za-z_\.-]*\)\]/\1/p'
 }
 
 function _aws_profiles() {
